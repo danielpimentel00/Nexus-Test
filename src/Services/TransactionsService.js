@@ -17,7 +17,20 @@ class TransactionsService {
       this._axiosInstance
         .get("/transactions")
         .then((res) => {
-          resolve(res.data.data);
+          resolve(res.data);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  getAccounts() {
+    return new Promise((resolve, reject) => {
+      this._axiosInstance
+        .get("/accounts")
+        .then((res) => {
+          resolve(res.data);
         })
         .catch((err) => {
           reject(err);
