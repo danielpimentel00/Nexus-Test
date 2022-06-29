@@ -20,7 +20,7 @@ class TransactionsService {
           resolve(res.data);
         })
         .catch((err) => {
-          reject(err);
+          reject(err.response.data);
         });
     });
   }
@@ -33,7 +33,7 @@ class TransactionsService {
           resolve(res.data);
         })
         .catch((err) => {
-          reject(err);
+          reject(err.response.data);
         });
     });
   }
@@ -46,7 +46,20 @@ class TransactionsService {
           resolve(res.data);
         })
         .catch((err) => {
-          reject(err);
+          reject(err.response.data);
+        });
+    });
+  }
+
+  putTransaction(body) {
+    return new Promise((resolve, reject) => {
+      this._axiosInstance
+        .put("/transactions", body)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((err) => {
+          reject(err.response.data);
         });
     });
   }
