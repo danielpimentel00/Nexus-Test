@@ -63,6 +63,19 @@ class TransactionsService {
         });
     });
   }
+
+  deleteTransaction(id) {
+    return new Promise((resolve, reject) => {
+      this._axiosInstance
+        .delete(`/transactions/${id}`)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((err) => {
+          reject(err.response.data);
+        });
+    });
+  }
 }
 
 var transactionsService = new TransactionsService();
