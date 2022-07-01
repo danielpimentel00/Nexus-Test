@@ -1,4 +1,8 @@
 .HomePage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .transactionCards {
@@ -34,4 +38,15 @@
 
 .hideCard {
   display: none;
+}
+
+.label {
+  color: white;
+  font-size: 30px;
+  border-radius: 6px;
+  height: 50px;
+  margin: 50px 0 0;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
 }

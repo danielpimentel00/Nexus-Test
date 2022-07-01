@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import CardComponent from "../../Components/CardComponent";
 import transactionsService from "../../Services/TransactionsService";
 import "./HomePage.css";
@@ -16,13 +16,13 @@ import {
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
 export default function HomePage() {
   const [transactions, setTransactions] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(false);
   const [isAlertOpened, setIsAlertOpened] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [newTransaction, setNewTransaction] = useState({
@@ -32,6 +32,8 @@ export default function HomePage() {
     date: "",
     accountId: "",
   });
+
+  const dataRef = useRef(true);
 
   useEffect(() => {
     getTransactions();
@@ -43,7 +45,6 @@ export default function HomePage() {
       .getTransactions()
       .then((res) => {
         setTransactions(res.data);
-        // setSearchInput(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -102,6 +103,51 @@ export default function HomePage() {
     }
   };
 
+  const displayTransactions = () => {
+    const trans = transactions
+      .filter((item) => {
+        if (searchInput === "") {
+          return item;
+        } else if (
+          item.concept.toLowerCase().includes(searchInput.toLowerCase())
+        ) {
+          return item;
+        }
+      })
+      .map((item, index) => {
+        return (
+          <div className={"card"} key={index}>
+            <CardComponent
+              text={item.concept}
+              onButtonClick={() => deleteTransaction(index)}
+            />
+          </div>
+        );
+      });
+
+    if (trans.length === 0 && dataRef.current === true) {
+      dataRef.current = false;
+    } else if (trans.length > 0 && dataRef.current === false) {
+      dataRef.current = true;
+    }
+
+    return <div className="transactionCards">{trans}</div>;
+  };
+
+  const displayLabel = () => {
+    if (!dataRef.current) {
+      return (
+        <div className={"label"}>
+          <p>No data found</p>
+        </div>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
+  const sortTransactionsAsc = () => {};
+
   const openForm = () => {
     setIsFormOpen(true);
   };
@@ -127,11 +173,17 @@ export default function HomePage() {
     setNewTransaction(tempTransaction);
   };
 
-  const filterConcepts = (input) => {
-    const searchItems = transactions.filter(
-      (item) => item.concept.toLowerCase().includes(input.toLowerCase()) && item
-    );
-    setSearchInput(() => searchItems);
+  const validateSearchInput = (event) => {
+    const inputString = event.target.value;
+    const inputChar = inputString.substring(inputString.length - 1);
+    const regex = /[A-Za-z 0-9]/;
+    const isCharValid = regex.test(inputChar);
+
+    // if()
+
+    console.log(inputChar);
+
+    setSearchInput(inputString);
   };
 
   const validateForm = () => {
@@ -185,46 +237,6 @@ export default function HomePage() {
     }
   };
 
-  const Search = styled("div")(({ theme }) => ({
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(3),
-      width: "auto",
-    },
-  }));
-
-  const SearchIconWrapper = styled("div")(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }));
-
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: "inherit",
-    "& .MuiInputBase-input": {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      [theme.breakpoints.up("md")]: {
-        width: "20ch",
-      },
-    },
-  }));
-
   return (
     <div className="HomePage">
       <div className="toolBar">
@@ -238,38 +250,19 @@ export default function HomePage() {
           Create Transaction
         </Button>
 
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            autoFocus
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-        </Search>
+        <TextField
+          sx={{ color: "#fff" }}
+          label="Search..."
+          margin="dense"
+          type="text"
+          variant="filled"
+          onChange={(e) => validateSearchInput(e)}
+        />
       </div>
-      <div className="transactionCards">
-        {transactions
-          .filter((item) => {
-            if (searchInput === "") {
-              return item;
-            } else if (
-              item.concept.toLowerCase().includes(searchInput.toLowerCase())
-            ) {
-              return item;
-            }
-          })
-          .map((item, index) => (
-            <div className={"card"} key={index}>
-              <CardComponent
-                text={item.concept}
-                onButtonClick={() => deleteTransaction(index)}
-              />
-            </div>
-          ))}
-      </div>
+
+      {displayLabel()}
+
+      {displayTransactions()}
 
       <Dialog open={isFormOpen} onClose={closeForm}>
         <DialogTitle>
