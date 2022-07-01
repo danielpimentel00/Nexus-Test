@@ -1,4 +1,7 @@
 .HomePage {
+}
+
+.transactionCards {
   margin: 40px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -6,15 +9,29 @@
 }
 
 @media screen and (max-width: 1200px) {
-  .HomePage {
+  .transactionCards {
     grid-template-columns: 1fr 1fr;
     gap: 50px;
   }
 }
 
 @media screen and (max-width: 750px) {
-  .HomePage {
+  .transactionCards {
     grid-template-columns: 1fr;
     gap: 50px;
   }
+}
+
+.toolBar {
+  margin: 100px 0 0;
+  display: flex;
+  flex-direction: row;
+  padding: 0 40px;
+}
+
+#createButton {
+}
+
+.hideCard {
+  display: none;
 }

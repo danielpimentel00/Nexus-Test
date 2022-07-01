@@ -3,36 +3,43 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  CardHeader,
   Typography,
-  IconButton,
+  CardActions,
+  Button,
 } from "@mui/material";
-import { Clear as ClearIcon } from "@mui/icons-material";
 
-export default function CardComponent({ text }) {
+export default function CardComponent({ text, onButtonClick }) {
   return (
     <>
       <Card
         sx={{
           width: 300,
           textAlign: "left",
+          bgcolor: "#FFFFE0",
         }}
       >
-        <CardHeader
-          title="Concept"
-          action={
-            <IconButton aria-label="delete">
-              <ClearIcon />
-            </IconButton>
-          }
-        />
         <CardActionArea>
           <CardContent>
-            <Typography variant="body1" color="text.primary">
+            <Typography gutterBottom variant="h5">
+              Concept
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
               {text}
             </Typography>
           </CardContent>
         </CardActionArea>
+        <CardActions sx={{ bgcolor: "#FFFACD" }}>
+          <Button
+            variant="outlined"
+            size="small"
+            color="error"
+            disableElevation
+            onClick={onButtonClick}
+            sx={{ position: "relative", left: 200 }}
+          >
+            Delete
+          </Button>
+        </CardActions>
       </Card>
     </>
   );
