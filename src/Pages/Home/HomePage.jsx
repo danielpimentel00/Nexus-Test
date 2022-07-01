@@ -23,7 +23,8 @@ export default function HomePage() {
   const [searchInput, setSearchInput] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isAlertOpened, setIsAlertOpened] = useState(false);
+  const [isFormAlertOpened, setIsFormAlertOpened] = useState(false);
+  const [isInputValid, setIsInputValid] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [newTransaction, setNewTransaction] = useState({
     concept: "",
@@ -175,13 +176,23 @@ export default function HomePage() {
 
   const validateSearchInput = (event) => {
     const inputString = event.target.value;
-    const inputChar = inputString.substring(inputString.length - 1);
     const regex = /[A-Za-z 0-9]/;
-    const isCharValid = regex.test(inputChar);
+    let isCharValid = true;
 
-    // if()
+    for (let i = 0; i < inputString.length; i++) {
+      const character = inputString[i];
 
-    console.log(inputChar);
+      if (!regex.test(character)) {
+        isCharValid = false;
+        break;
+      }
+    }
+
+    if (!isCharValid) {
+      setIsInputValid(false);
+    } else {
+      setIsInputValid(true);
+    }
 
     setSearchInput(inputString);
   };
@@ -202,26 +213,26 @@ export default function HomePage() {
 
     if (!isFormInputValid) {
       if (concept === "") {
-        setIsAlertOpened(true);
+        setIsFormAlertOpened(true);
         setAlertMessage("Concept field is required");
       } else if (description === "") {
-        setIsAlertOpened(true);
+        setIsFormAlertOpened(true);
         setAlertMessage("Description field is required");
       } else if (ammount <= 0) {
-        setIsAlertOpened(true);
+        setIsFormAlertOpened(true);
         setAlertMessage("Invalid Ammount");
       } else if (date === "") {
-        setIsAlertOpened(true);
+        setIsFormAlertOpened(true);
         setAlertMessage("Date field is required");
       } else if (accountId === "") {
-        setIsAlertOpened(true);
+        setIsFormAlertOpened(true);
         setAlertMessage("Account Id field is required");
       } else {
-        setIsAlertOpened(true);
+        setIsFormAlertOpened(true);
         setAlertMessage("Invalid Account Id");
       }
     } else {
-      setIsAlertOpened(false);
+      setIsFormAlertOpened(false);
 
       createTransaction();
 
@@ -260,6 +271,14 @@ export default function HomePage() {
         />
       </div>
 
+      <div>
+        <Collapse in={!isInputValid}>
+          <Alert variant="outlined" severity="error">
+            Invalid Input
+          </Alert>
+        </Collapse>
+      </div>
+
       {displayLabel()}
 
       {displayTransactions()}
@@ -267,7 +286,7 @@ export default function HomePage() {
       <Dialog open={isFormOpen} onClose={closeForm}>
         <DialogTitle>
           Create Transaction
-          <Collapse in={isAlertOpened}>
+          <Collapse in={isFormAlertOpened}>
             <Alert variant="outlined" severity="error">
               {alertMessage}
             </Alert>
