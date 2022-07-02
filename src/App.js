@@ -1,9 +1,9 @@
+import React from "react";
 import {
   BrowserRouter,
   Navigate,
   Outlet,
   Route,
-  Router,
   Routes,
 } from "react-router-dom";
 import "./App.css";
