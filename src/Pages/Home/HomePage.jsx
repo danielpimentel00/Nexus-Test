@@ -297,7 +297,6 @@ export default function HomePage() {
             id="searchField"
             sx={{ color: "#fff", width: 400, marginRight: 2 }}
             label="Search..."
-            // margin="dense"
             type="text"
             variant="filled"
             onChange={(e) => validateSearchInput(e)}
