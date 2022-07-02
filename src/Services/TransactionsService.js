@@ -1,4 +1,3 @@
-import { Filter } from "@mui/icons-material";
 import axios from "axios";
 
 class TransactionsService {

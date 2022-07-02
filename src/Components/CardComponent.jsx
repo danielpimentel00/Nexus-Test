@@ -36,7 +36,6 @@ export default function CardComponent({ text, onButtonClick, onCardClick }) {
             >
               Concept
             </Typography>
-            {/* <hr style={{ width: "265px" }} /> */}
             <Typography paragraph variant="body1">
               {text}
             </Typography>
