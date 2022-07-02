@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import CardComponent from "../../Components/CardComponent";
 import transactionsService from "../../Services/TransactionsService";
 import "./HomePage.css";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -13,9 +14,8 @@ import {
   Alert,
   Collapse,
   InputBase,
+  IconButton,
 } from "@mui/material";
-import { styled, alpha } from "@mui/material/styles";
-import SearchIcon from "@mui/icons-material/Search";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
 export default function HomePage() {
@@ -24,8 +24,9 @@ export default function HomePage() {
   const [accounts, setAccounts] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isFormAlertOpened, setIsFormAlertOpened] = useState(false);
-  const [isInputValid, setIsInputValid] = useState(false);
+  const [isInputValid, setIsInputValid] = useState(true);
   const [alertMessage, setAlertMessage] = useState("");
+  const [transactionsOrder, setTransactionsOrder] = useState(0); //0: Default, 1: Ascending, 2: Descending
   const [newTransaction, setNewTransaction] = useState({
     concept: "",
     description: "",
@@ -36,9 +37,12 @@ export default function HomePage() {
 
   const dataRef = useRef(true);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     getTransactions();
     getAccounts();
+    sortTransactionsAsc();
   }, []);
 
   const getTransactions = () => {
@@ -78,6 +82,7 @@ export default function HomePage() {
       })
       .then((res) => {
         console.log(res);
+        getTransactions();
       })
       .catch((err) => {
         console.log(err);
@@ -104,50 +109,31 @@ export default function HomePage() {
     }
   };
 
-  const displayTransactions = () => {
-    const trans = transactions
-      .filter((item) => {
-        if (searchInput === "") {
-          return item;
-        } else if (
-          item.concept.toLowerCase().includes(searchInput.toLowerCase())
-        ) {
-          return item;
-        }
-      })
-      .map((item, index) => {
-        return (
-          <div className={"card"} key={index}>
-            <CardComponent
-              text={item.concept}
-              onButtonClick={() => deleteTransaction(index)}
-            />
-          </div>
-        );
-      });
-
-    if (trans.length === 0 && dataRef.current === true) {
-      dataRef.current = false;
-    } else if (trans.length > 0 && dataRef.current === false) {
-      dataRef.current = true;
-    }
-
-    return <div className="transactionCards">{trans}</div>;
-  };
-
-  const displayLabel = () => {
-    if (!dataRef.current) {
-      return (
-        <div className={"label"}>
-          <p>No data found</p>
-        </div>
-      );
+  const sortTransactions = () => {
+    if (transactionsOrder === 0 || transactionsOrder === 2) {
+      setTransactionsOrder(1);
+      sortTransactionsAsc();
     } else {
-      return <></>;
+      setTransactionsOrder(2);
+      sortTransactionsDesc();
     }
   };
 
-  const sortTransactionsAsc = () => {};
+  const sortTransactionsAsc = () => {
+    const ascendingTrans = [...transactions].sort((a, b) =>
+      a.concept > b.concept ? 1 : -1
+    );
+
+    setTransactions(ascendingTrans);
+  };
+
+  const sortTransactionsDesc = () => {
+    const descendingTrans = [...transactions].sort((a, b) =>
+      a.concept > b.concept ? -1 : 1
+    );
+
+    setTransactions(descendingTrans);
+  };
 
   const openForm = () => {
     setIsFormOpen(true);
@@ -172,6 +158,11 @@ export default function HomePage() {
     tempTransaction[eventName] = eventValue;
 
     setNewTransaction(tempTransaction);
+  };
+
+  const seeTranDescription = (index) => {
+    const id = transactions[index].id;
+    navigate(`/description/${id}`);
   };
 
   const validateSearchInput = (event) => {
@@ -248,6 +239,50 @@ export default function HomePage() {
     }
   };
 
+  const displayTransactions = () => {
+    const trans = transactions
+      .filter((item) => {
+        if (searchInput === "") {
+          return item;
+        } else if (
+          item.concept.toLowerCase().includes(searchInput.toLowerCase())
+        ) {
+          return item;
+        }
+      })
+      .map((item, index) => {
+        return (
+          <div key={index}>
+            <CardComponent
+              text={item.concept}
+              onCardClick={() => seeTranDescription(index)}
+              onButtonClick={() => deleteTransaction(index)}
+            />
+          </div>
+        );
+      });
+
+    if (trans.length === 0 && dataRef.current === true) {
+      dataRef.current = false;
+    } else if (trans.length > 0 && dataRef.current === false) {
+      dataRef.current = true;
+    }
+
+    return <div className="transactionCards">{trans}</div>;
+  };
+
+  const displayLabel = () => {
+    if (!dataRef.current) {
+      return (
+        <div className={"label"}>
+          <p>No data found</p>
+        </div>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   return (
     <div className="HomePage">
       <div className="toolBar">
@@ -261,19 +296,31 @@ export default function HomePage() {
           Create Transaction
         </Button>
 
-        <TextField
-          sx={{ color: "#fff" }}
-          label="Search..."
-          margin="dense"
-          type="text"
-          variant="filled"
-          onChange={(e) => validateSearchInput(e)}
-        />
+        <div className="toolBarFilterElements">
+          <TextField
+            id="searchField"
+            sx={{ color: "#fff", width: 400, marginRight: 2 }}
+            label="Search..."
+            // margin="dense"
+            type="text"
+            variant="filled"
+            onChange={(e) => validateSearchInput(e)}
+          />
+
+          <Button
+            color="primary"
+            variant="contained"
+            aria-label="sort-transactions"
+            onClick={() => sortTransactions()}
+          >
+            Sort
+          </Button>
+        </div>
       </div>
 
       <div>
-        <Collapse in={!isInputValid}>
-          <Alert variant="outlined" severity="error">
+        <Collapse in={!isInputValid} sx={{ width: 300, marginTop: 2 }}>
+          <Alert variant="filled" severity="error">
             Invalid Input
           </Alert>
         </Collapse>
@@ -287,44 +334,13 @@ export default function HomePage() {
         <DialogTitle>
           Create Transaction
           <Collapse in={isFormAlertOpened}>
-            <Alert variant="outlined" severity="error">
+            <Alert variant="filled" severity="error">
               {alertMessage}
             </Alert>
           </Collapse>
         </DialogTitle>
 
         <DialogContent>
-          {/* <ValidatorForm
-            // ref="form"
-            onSubmit={createTransaction}
-            onError={(err) => console.log(err)}
-          >
-            <TextValidator
-              helperText="Concept *"
-              name="concept"
-              type="text"
-              fullWidth
-              margin="dense"
-              variant="standard"
-              value={newTransaction.concept}
-              onChange={(e) => handleInputChange(e)}
-              validators={["required"]}
-              errorMessages={["this field is required"]}
-            />
-            <TextValidator
-              helperText="Date *"
-              name="date"
-              type="date"
-              fullWidth
-              margin="dense"
-              variant="standard"
-              value={newTransaction.date}
-              onChange={(e) => handleInputChange(e)}
-              validators={["required"]}
-              errorMessages={["this field is required"]}
-            />
-            <Button type="submit">Submit</Button>
-          </ValidatorForm> */}
           <TextField
             autoFocus
             required

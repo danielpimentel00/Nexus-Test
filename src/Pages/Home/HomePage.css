@@ -12,10 +12,27 @@
   gap: 50px 100px;
 }
 
+.toolBar {
+  width: 900px;
+  max-height: 60px;
+  margin: 100px 0 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.toolBarFilterElements {
+  display: flex;
+}
+
 @media screen and (max-width: 1200px) {
   .transactionCards {
     grid-template-columns: 1fr 1fr;
     gap: 50px;
+  }
+
+  .toolBar {
+    width: 700px;
   }
 }
 
@@ -24,24 +41,16 @@
     grid-template-columns: 1fr;
     gap: 50px;
   }
-}
 
-.toolBar {
-  margin: 100px 0 0;
-  display: flex;
-  flex-direction: row;
-  padding: 0 40px;
-}
-
-#createButton {
-}
-
-.hideCard {
-  display: none;
+  .toolBar {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .label {
-  color: white;
+  color: black;
   font-size: 30px;
   border-radius: 6px;
   height: 50px;

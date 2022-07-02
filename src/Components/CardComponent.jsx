@@ -8,34 +8,47 @@ import {
   Button,
 } from "@mui/material";
 
-export default function CardComponent({ text, onButtonClick }) {
+export default function CardComponent({ text, onButtonClick, onCardClick }) {
   return (
     <>
       <Card
         sx={{
           width: 300,
           textAlign: "left",
-          bgcolor: "#FFFFE0",
+          bgcolor: "#90e0ef",
+          color: "#000",
         }}
       >
-        <CardActionArea>
+        <CardActionArea
+          sx={{
+            height: "150px",
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+          }}
+          onClick={onCardClick}
+        >
           <CardContent>
-            <Typography gutterBottom variant="h5">
+            <Typography
+              gutterBottom
+              variant="h5"
+              sx={{ borderBottom: "3px solid #00b4d8", width: "265px" }}
+            >
               Concept
             </Typography>
-            <Typography variant="body1" color="text.secondary">
+            {/* <hr style={{ width: "265px" }} /> */}
+            <Typography paragraph variant="body1">
               {text}
             </Typography>
           </CardContent>
         </CardActionArea>
-        <CardActions sx={{ bgcolor: "#FFFACD" }}>
+        <CardActions sx={{ bgcolor: "#00b4d8", position: "relative", top: 0 }}>
           <Button
-            variant="outlined"
+            variant="contained"
             size="small"
             color="error"
-            disableElevation
             onClick={onButtonClick}
-            sx={{ position: "relative", left: 200 }}
+            sx={{ left: 200 }}
           >
             Delete
           </Button>
