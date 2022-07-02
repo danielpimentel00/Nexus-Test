@@ -24,3 +24,9 @@
   flex-direction: row;
   justify-content: flex-end;
 }
+
+@media screen and (max-width: 750px) {
+  .form {
+    width: 400px;
+  }
+}
