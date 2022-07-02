@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import transactionsService from "../../Services/TransactionsService";
@@ -82,4 +83,12 @@ export default function DescriptionPage() {
       </div>
     </div>
   );
+=======
+import React from "react";
+import { useParams } from "react-router-dom";
+
+export default function DescriptionPage() {
+  const param = useParams();
+  return <div>DescriptionPage id:{param.id}</div>;
+>>>>>>> master
 }
