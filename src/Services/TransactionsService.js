@@ -1,3 +1,4 @@
+import { Filter } from "@mui/icons-material";
 import axios from "axios";
 
 class TransactionsService {
@@ -21,6 +22,20 @@ class TransactionsService {
         })
         .catch((err) => {
           reject(err.response.data);
+        });
+    });
+  }
+
+  getTransactionById(id) {
+    return new Promise((resolve, reject) => {
+      this.getTransactions()
+        .then((res) => {
+          const results = res.data;
+          const result = results.filter((item) => item.id === id)[0];
+          resolve(result);
+        })
+        .catch((err) => {
+          reject(err);
         });
     });
   }
