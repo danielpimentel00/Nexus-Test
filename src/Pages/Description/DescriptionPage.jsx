@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import transactionsService from "../../Services/TransactionsService";
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
-  TextField,
-  Alert,
-  Collapse,
-} from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import "./DescriptionPage.css";
 
 export default function DescriptionPage() {
@@ -60,7 +51,6 @@ export default function DescriptionPage() {
         .then((res) => {
           getTransaction(param.id);
           setIsEditEnabled(false);
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);

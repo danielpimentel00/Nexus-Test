@@ -156,7 +156,7 @@ export default function HomePage() {
     setNewTransaction(tempTransaction);
   };
 
-  const seeTranDescription = (index) => {
+  const viewTransactionDescription = (index) => {
     const id = transactions[index].id;
     navigate(`/description/${id}`);
   };
@@ -251,7 +251,7 @@ export default function HomePage() {
           <div key={index}>
             <CardComponent
               text={item.concept}
-              onCardClick={() => seeTranDescription(index)}
+              onCardClick={() => viewTransactionDescription(index)}
               onButtonClick={() => deleteTransaction(index)}
             />
           </div>
